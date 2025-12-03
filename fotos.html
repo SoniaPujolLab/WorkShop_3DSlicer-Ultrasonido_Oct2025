@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sobre 3D Slicer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+  <style>
+    body{
+      margin:0;
+      font-family:'Montserrat',sans-serif;
+      background:url('source/column.jpg') no-repeat center center/cover;
+      background-attachment:fixed;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    /* Helpers tipo “Bootstrap” */
+    .container{max-width:1200px;margin:0 auto;}
+    .text-center{text-align:center;}
+    .mt-4{margin-top:1.5rem;}
+    .img-fluid{max-width:100%;height:auto;}
+    .mb-3{margin-bottom:1rem;}
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:20px;
+      text-transform:uppercase;
+      background:rgba(18,18,18,0.8);
+    }
+    .logo{text-align:center;}
+    .logo h1{margin:0;font-size:2rem;color:#D3D3D3;}
+    .logo p{margin:0;font-size:.8rem;color:#A9A9A9;}
+    nav a{color:white;text-decoration:none;margin:0 15px;}
+    nav a.active{color:#D3D3D3;}
+
+    /* Ya no usamos .hero/.content aquí, pero los dejo por si se reutilizan */
+    .hero{position:relative;display:flex;align-items:center;height:80vh;}
+    .content{padding-left:5%;}
+    .content h2{
+      font-size:6rem;color:#fff;margin:0;
+      text-shadow:-1px -1px 0 black,1px -1px 0 black,-1px 1px 0 black,1px 1px 0 black;
+    }
+    .content p{
+      font-size:1.2rem;line-height:1.8;background:rgba(0,0,0,.7);
+      padding:20px;border-radius:10px;
+    }
+
+    /* Social para esta página (footer-ish, centrada) */
+    .social{
+      margin-top:25px;
+      display:flex;
+      justify-content:center;
+      gap:20px;
+    }
+    .social a{
+      color:white;
+      text-decoration:none;
+      font-size:1.5rem;
+    }
+
+    /* Equipo (no lo usas aquí pero lo dejo) */
+    .section-title{
+      font-size:2rem;margin:40px 0 30px;color:#D3D3D3;text-align:center;
+    }
+    .team{
+      display:flex;flex-wrap:wrap;gap:30px;justify-content:space-between;margin-top:10px;
+    }
+    a.team-member{
+      display:block;
+      text-decoration:none;
+      color:inherit;
+      background:rgba(0,0,0,.8);
+      padding:20px;border-radius:10px;text-align:center;width:200px;
+      transition:transform .3s ease, box-shadow .3s ease, background .3s ease;
+      cursor:pointer;
+    }
+    a.team-member:hover, a.team-member:focus{
+      transform:translateY(-10px);
+      box-shadow:0 10px 15px rgba(0,0,0,.3);
+      outline:none;
+      background:rgba(0,0,0,.86);
+    }
+    .team-member img{
+      width:100%;height:200px;object-fit:cover;border-radius:10px;
+    }
+    .team-member h3{margin-top:10px;color:#D3D3D3;}
+    .team-member p{color:#A9A9A9;}
+
+    @media (max-width:800px){
+      header{flex-direction:column;text-align:center;}
+      nav a{display:block;margin:10px 0;}
+      .content h2{font-size:2rem;}
+    }
+
+    /* ===== GALERÍA / CARRUSEL ===== */
+    .photos {
+      padding:40px 20px 50px; 
+    }
+
+    .photos .main-photo {
+      margin-bottom: 50px !important;
+    }
+
+    .main-photo {
+      height: 650px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 10px;
+      border: 2px solid #fff;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.65);
+      margin-bottom: 80px;
+      z-index: 1;
+    }
+
+    /* Contenedor de carrusel */
+    .thumbs-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .thumb-arrow {
+      background: rgba(0,0,0,0.7); /* sin var() para que siempre se vea */
+      color: white;
+      border: none;
+      font-size: 26px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      z-index: 20;
+      transform: translateY(25px);
+    }
+
+    .thumbs-window {
+      width: 920px;
+      max-width: 100%;
+      height: 140px;
+      overflow: hidden;
+      position: relative;
+      z-index: 30;
+    }
+
+    .thumbs-strip {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      height: 100%;
+      transition: transform 0.25s ease;
+    }
+
+    .thumb {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.1s ease-out;
+      position: relative;
+      opacity: 0.7;
+    }
+
+    .active-thumb {
+      border-color: #fff;
+      opacity: 1;
+    }
+
+    .thumb.dock-active {
+      z-index: 5;
+    }
+
+    @media (max-width: 800px){
+      .main-photo{
+        height:auto;
+        max-height:400px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="speakers.html">Ponentes</a>
+    <a href="about.html">Sobre 3D Slicer Latinoamérica</a>
+    <a href="fotos.html" class="active">Fotos</a>
+  </nav>
+  <div class="logo">
+    <h1>3D SLICER</h1>
+    <p>for Latinoamerica</p>
+  </div>
+  <p>Estado de México, México, 2025</p>
+</header>
+
+<section class="photos container text-center mt-4">
+
+  <!-- Imagen principal -->
+  <img id="mainPhoto" class="main-photo img-fluid mb-3" src="img/event/IMG_1.JPEG" alt="Foto principal del evento">
+
+  <!-- Contenedor del carrusel -->
+  <div class="thumbs-wrapper">
+
+    <!-- Flecha izquierda -->
+    <button id="btnLeft" class="thumb-arrow">&#10094;</button>
+
+    <!-- Ventana que solo deja ver varias thumbnails -->
+    <div class="thumbs-window">
+      <div class="thumbs-strip">
+        <!-- 👉 Aquí puedes agregar tantas imágenes como quieras -->
+        <img class="thumb" data-photo="img/event/IMG_2.jpg" src="img/event/IMG_2.jpg" alt="IMG_2">
+        <img class="thumb" data-photo="img/event/IMG_3.png"  src="img/event/IMG_3.png"  alt="IMG_3">
+        <img class="thumb" data-photo="img/event/IMG_4.jpg"  src="img/event/IMG_4.jpg"  alt="IMG_4">
+        <img class="thumb" data-photo="img/event/IMG_5.png" src="img/event/IMG_5.png" alt="IMG_5">
+        <img class="thumb" data-photo="img/event/IMG_6.jpg"  src="img/event/IMG_6.jpg"  alt="IMG_6">
+	<img class="thumb" data-photo="img/event/IMG_7.png" src="img/event/IMG_7.png" alt="IMG_7">
+        <img class="thumb" data-photo="img/event/IMG_8.jpg"  src="img/event/IMG_8.jpg"  alt="IMG_8">
+	<img class="thumb" data-photo="img/event/IMG_9.png" src="img/event/IMG_9.png" alt="IMG_9">
+        <img class="thumb" data-photo="img/event/IMG_10.jpg" src="img/event/IMG_10.jpg" alt="IMG_10">
+	<img class="thumb" data-photo="img/event/IMG_11.png" src="img/event/IMG_11.png" alt="IMG_11">
+        <img class="thumb" data-photo="img/event/IMG_12.jpg" src="img/event/IMG_12.jpg" alt="IMG_12">
+	<img class="thumb" data-photo="img/event/IMG_13.png" src="img/event/IMG_13.png" alt="IMG_13">
+        <img class="thumb" data-photo="img/event/IMG_14.jpg" src="img/event/IMG_14.jpg" alt="IMG_14">
+	<img class="thumb" data-photo="img/event/IMG_15.png" src="img/event/IMG_15.png" alt="IMG_15">
+        <img class="thumb" data-photo="img/event/IMG_16.jpg" src="img/event/IMG_16.jpg" alt="IMG_16">
+	<img class="thumb" data-photo="img/event/IMG_17.png" src="img/event/IMG_17.png" alt="IMG_17">
+        <img class="thumb" data-photo="img/event/IMG_18.jpg" src="img/event/IMG_18.jpg" alt="IMG_18">
+        <img class="thumb" data-photo="img/event/IMG_19.png" src="img/event/IMG_19.png" alt="IMG_19">
+        <img class="thumb" data-photo="img/event/IMG_20.png" src="img/event/IMG_20.png" alt="IMG_20">
+        <img class="thumb" data-photo="img/event/IMG_21.png" src="img/event/IMG_21.png" alt="IMG_21">
+        <img class="thumb" data-photo="img/event/IMG_22.png" src="img/event/IMG_22.png" alt="IMG_22">
+        <img class="thumb" data-photo="img/event/IMG_23.JPEG" src="img/event/IMG_23.JPEG" alt="IMG_23">
+	<img class="thumb" data-photo="img/event/IMG_28.JPEG" src="img/event/IMG_28.JPEG" alt="IMG_28">
+        <img class="thumb" data-photo="img/event/IMG_29.JPEG" src="img/event/IMG_29.JPEG" alt="IMG_29">
+        <img class="thumb" data-photo="img/event/IMG_30.JPEG" src="img/event/IMG_30.JPEG" alt="IMG_30">
+        <img class="thumb" data-photo="img/event/IMG_31.JPEG" src="img/event/IMG_31.JPEG" alt="IMG_31">
+	<img class="thumb" data-photo="img/event/IMG_32.JPEG" src="img/event/IMG_32.JPEG" alt="IMG_32">
+        <img class="thumb" data-photo="img/event/IMG_33.JPEG" src="img/event/IMG_33.JPEG" alt="IMG_33">
+	<img class="thumb" data-photo="img/event/IMG_34.JPEG" src="img/event/IMG_34.JPEG" alt="IMG_34">
+        <img class="thumb" data-photo="img/event/IMG_36.JPEG" src="img/event/IMG_36.JPEG" alt="IMG_36">
+        <img class="thumb" data-photo="img/event/IMG_37.JPEG" src="img/event/IMG_37.JPEG" alt="IMG_37">
+        <img class="thumb" data-photo="img/event/IMG_38.JPEG" src="img/event/IMG_38.JPEG" alt="IMG_38">
+	<img class="thumb" data-photo="img/event/IMG_39.JPEG" src="img/event/IMG_39.JPEG" alt="IMG_39">
+        <img class="thumb" data-photo="img/event/IMG_40.JPEG" src="img/event/IMG_40.JPEG" alt="IMG_40">
+	<img class="thumb" data-photo="img/event/IMG_41.JPEG" src="img/event/IMG_41.JPEG" alt="IMG_41">
+        <img class="thumb" data-photo="img/event/IMG_42.JPEG" src="img/event/IMG_42.JPEG" alt="IMG_42">
+	<img class="thumb" data-photo="img/event/IMG_43.JPEG" src="img/event/IMG_43.JPEG" alt="IMG_43">
+        <img class="thumb" data-photo="img/event/IMG_44.JPEG" src="img/event/IMG_44.JPEG" alt="IMG_44">
+       
+      </div>
+    </div>
+
+    <!-- Flecha derecha -->
+    <button id="btnRight" class="thumb-arrow">&#10095;</button>
+  </div>
+
+  <div class="social">
+    <a href="https://github.com/SlicerLatinAmerica" target="_blank"><i class="fa-brands fa-github"></i></a>
+    <a href="https://slicerlatinamerica.github.io/events.html" target="_blank"><i class="fa-solid fa-globe"></i></a>
+  </div>
+
+</section> 
+
+<script>
+  // Cambiar foto principal al hacer clic en una miniatura
+  const mainPhoto = document.getElementById('mainPhoto');
+  const thumbs = document.querySelectorAll('.thumb');
+  let currentThumbIndex = 0;
+
+  thumbs.forEach((thumb, index) => {
+    thumb.addEventListener('click', () => {
+      mainPhoto.src = thumb.dataset.photo;
+
+      thumbs[currentThumbIndex].classList.remove('active-thumb');
+      currentThumbIndex = index;
+      thumb.classList.add('active-thumb');
+    });
+  });
+
+  // Marcar la miniatura correspondiente a la imagen inicial
+  if (thumbs.length > 0) {
+    thumbs[0].classList.add('active-thumb');
+  }
+
+  // Lógica para mover el carrusel horizontal con las flechas
+  const strip = document.querySelector('.thumbs-strip');
+  const btnLeft = document.getElementById('btnLeft');
+  const btnRight = document.getElementById('btnRight');
+
+  const visibleCount = 8;        // aprox cuántas se ven a la vez
+  const thumbWidth = 90;         // ancho aproximado incluyendo gap
+  let offset = 0;
+
+  function updateButtons() {
+    const maxOffset = Math.max(0, thumbs.length - visibleCount);
+    btnLeft.disabled = offset === 0;
+    btnRight.disabled = offset >= maxOffset;
+  }
+
+  btnLeft.addEventListener('click', () => {
+    if (offset > 0) {
+      offset--;
+      strip.style.transform = `translateX(${-offset * thumbWidth}px)`;
+      updateButtons();
+    }
+  });
+
+  btnRight.addEventListener('click', () => {
+    const maxOffset = Math.max(0, thumbs.length - visibleCount);
+    if (offset < maxOffset) {
+      offset++;
+      strip.style.transform = `translateX(${-offset * thumbWidth}px)`;
+      updateButtons();
+    }
+  });
+
+  updateButtons();
+</script>
+
+</body>
+</html>
